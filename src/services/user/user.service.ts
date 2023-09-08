@@ -1,16 +1,19 @@
-import { Connection } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { User } from '../../schemas/user.schema';
-import { CreateUserDto } from './dto/create-user.dto';
+import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@app/transformers/model.transformer';
+import { MongooseModel } from '@app/interfaces/mongoose.interface';
+import { User } from '../../modules/user/user.schema';
+import { UserCreateDTO } from './user.dto';
 
 @Injectable()
-export class UsersService {
-  constructor(@InjectConnection('users') private connection: Connection) {}
+export class UserService {
+  constructor(
+    private readonly jwtService: JwtService,
+    @InjectModel(User) private readonly userModel: MongooseModel<User>,
+  ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const createUser = new this.userModel(createUserDto);
-    return createUser.save();
+  async putUserInfo(payload: UserCreateDTO): Promise<User> {
+    return this.userModel.create(payload);
   }
 
   async findAll(): Promise<User[]> {
