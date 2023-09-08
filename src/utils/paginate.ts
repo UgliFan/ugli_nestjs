@@ -59,7 +59,7 @@ export function paginate<T>(this: Model<T>, filterQuery: PaginateQuery<T> = {}, 
 
   return Promise.all([countQuery, pageQuery]).then(([countResult, pageResult]) => {
     const result: PaginateResult<T> = {
-      documents: pageResult,
+      documents: pageResult as Array<T>,
       total: countResult,
       page,
       perPage,

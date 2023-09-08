@@ -5,10 +5,15 @@ import { AppController } from './app.controller';
 // middlewares
 import { CorsMiddleware } from '@app/middlewares/cors.middleware';
 import { OriginMiddleware } from '@app/middlewares/origin.middleware';
+import { HelperModule } from '@app/processors/helper/helper.module';
 // framework
 import { CacheInterceptor } from '@app/interceptors/cache.interceptor';
 import { ValidationPipe } from '@app/pipes/validation.pipe';
+// global modules
+import { DBModule } from './processors/db/db.module';
+import { CacheModule } from './processors/cache/cache.module';
 // biz modules
+import { AuthModule } from '@app/modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -20,6 +25,11 @@ import { UserModule } from './modules/user/user.module';
         ignoreUserAgents: [/googlebot/gi, /bingbot/gi, /baidubot/gi],
       },
     ]),
+    HelperModule,
+    DBModule,
+    CacheModule,
+    // bizs
+    AuthModule,
     UserModule,
   ],
   controllers: [AppController],

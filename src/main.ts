@@ -16,9 +16,9 @@ import { APP } from '@app/configs/app.config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, isProdEnv ? { logger: false } : {});
   // Helmet helps secure Express apps by setting HTTP response headers.
-  app.use(helmet);
+  app.use(helmet());
   // gzip or deflate
-  app.use(compression);
+  app.use(compression());
   app.use(cookieParser());
   app.use(bodyParser.json({ limit: '1mb' }));
   app.use(bodyParser.urlencoded({ extended: true }));

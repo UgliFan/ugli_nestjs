@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Injectable, NestMiddleware, HttpStatus, RequestMethod } from '@nestjs/common';
 import { isDevEnv } from '@app/configs/app.environment';
-import * as APP_CONFIG from '@app/configs/app.config';
+import { CROSS_DOMAIN, PROJECT } from '@app/configs/app.config';
 
 /**
  * @class CorsMiddleware
@@ -14,7 +14,7 @@ export class CorsMiddleware implements NestMiddleware {
     const origins = request.headers.origin;
     const origin = (Array.isArray(origins) ? origins[0] : origins) || '';
 
-    const allowedOrigins = [...APP_CONFIG.CROSS_DOMAIN.allowedOrigins];
+    const allowedOrigins = [...CROSS_DOMAIN.allowedOrigins];
     const allowedMethods = [RequestMethod.GET, RequestMethod.HEAD, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.POST, RequestMethod.DELETE];
     const allowedHeaders = [
       'Authorization',
@@ -44,7 +44,7 @@ export class CorsMiddleware implements NestMiddleware {
     response.header('Access-Control-Allow-Methods', allowedMethods.map(getMethod).join(','));
     response.header('Access-Control-Max-Age', '1728000');
     response.header('Content-Type', 'application/json; charset=utf-8');
-    response.header('X-Powered-By', `${APP_CONFIG.PROJECT.name} ${APP_CONFIG.PROJECT.version}`);
+    response.header('X-Powered-By', `${PROJECT.name} ${PROJECT.version}`);
 
     // OPTIONS Request
     if (request.method === getMethod(RequestMethod.OPTIONS)) {
