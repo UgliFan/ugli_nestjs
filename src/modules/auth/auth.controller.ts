@@ -8,6 +8,9 @@ import { AuthService } from './auth.service';
 import { TokenResult } from './auth.interface';
 import { Auth } from './auth.schema';
 import logger from '@app/utils/logger';
+import { decodeBase64 } from '@app/transformers/codec.transformer';
+import { HttpUnauthorizedError } from '@app/errors/unauthorized.error';
+import { AdminMaybeGuard } from '@app/guards/admin-maybe.guard';
 
 const log = logger.scope('AuthController');
 
@@ -19,6 +22,7 @@ export class AuthController {
   ) {}
 
   @Get('search')
+  @UseGuards(AdminMaybeGuard)
   @Responser.handle('Get user list')
   getAllUsers(@QueryParams() { isAuthed }: QueryParamsResult) {
     return isAuthed ? this.authService.getAllUsers() : this.authService.getUserCacheForGuest();
@@ -44,12 +48,13 @@ export class AuthController {
   }
 
   @Get('admin')
+  @UseGuards(AdminOnlyGuard)
   @Responser.handle('Get admin info')
   getAdminInfo(@QueryParams() { query }: QueryParamsResult): Promise<Auth> {
     return this.authService.getAdminInfo(query.email);
   }
 
-  @Put('admin')
+  @Put('update')
   @UseGuards(AdminOnlyGuard)
   @Responser.handle('Update admin info')
   putAdminInfo(@Body() auth: AuthUpdateDTO): Promise<Auth> {
@@ -66,9 +71,14 @@ export class AuthController {
 
   // refresh token
   @Post('renewal')
-  @UseGuards(AdminOnlyGuard)
   @Responser.handle('Renewal Token')
-  renewalToken(): TokenResult {
-    return this.authService.createToken('');
+  renewalToken(@QueryParams() { request }: QueryParamsResult): Promise<TokenResult> {
+    const encodeJwtSign = request.headers.authorization?.split('.')[1] || '';
+    if (encodeJwtSign) {
+      const jwtSign = JSON.parse(decodeBase64(encodeJwtSign)).data;
+      return this.authService.createToken(jwtSign as string);
+    } else {
+      throw new HttpUnauthorizedError();
+    }
   }
 }

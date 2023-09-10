@@ -1,4 +1,3 @@
-import lodash from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UNDEFINED } from '@app/constants/value.constant';
@@ -41,15 +40,17 @@ export class AuthService {
     return await this.authCache.get();
   }
 
-  public createToken(data: string): TokenResult {
+  public async createToken(authId: string): Promise<TokenResult> {
+    const token = this.jwtService.sign({ data: authId });
+    await this.cacheService.set(authId, token, +AUTH.expiresIn);
     return {
-      access_token: this.jwtService.sign({ data }),
+      access_token: token,
       expires_in: AUTH.expiresIn as number,
     };
   }
 
-  public validateAuthData(payload: any): Promise<any> {
-    const isVerified = lodash.isEqual(payload.data, AUTH.salt);
+  public async validateAuthData(payload: any): Promise<any> {
+    const isVerified = await this.cacheService.get(payload.data);
     return isVerified ? payload.data : null;
   }
 
@@ -59,41 +60,33 @@ export class AuthService {
   }
 
   public async putAdminInfo(auth: AuthUpdateDTO): Promise<Auth> {
-    const { password, new_password, email, ...restAuth } = auth;
-    const existAuth = await this.authModel.findOne({ email }).exec();
-    let newPassword: string | void = UNDEFINED;
-    if (password || new_password) {
-      // verify password
-      if (!password || !new_password) {
-        throw 'Incomplete passwords';
-      }
-      if (password === new_password) {
-        throw 'Old password and new password cannot be same';
-      }
-      // update password
-      const oldPassword = decodeMD5(password);
-      const existedPassword = existAuth?.password || '';
-      if (oldPassword !== existedPassword) {
-        throw 'Old password incorrect';
-      } else {
-        newPassword = decodeMD5(new_password);
-      }
-    }
-
-    // data
-    const targetAuthData: Auth = { email, ...restAuth };
-    if (newPassword) {
-      targetAuthData.password = newPassword;
-    }
-
-    // save
+    const { password = '', new_password, email, ...restAuth } = auth;
+    const targetAuthData: Partial<Auth> = { ...restAuth };
+    const existAuth = await this.authModel.findOne({ email }, '+password').exec();
     if (existAuth) {
-      await Object.assign(existAuth, targetAuthData).save();
-    } else {
-      await this.authModel.create(targetAuthData);
+      // save
+      if (new_password) {
+        const existedPassword = existAuth?.password || '';
+        const oldPassword = password ? decodeMD5(password) : password;
+        const newPassword: string = decodeMD5(new_password);
+        // verify password
+        if (!new_password) {
+          throw 'Incomplete passwords';
+        }
+        if (existedPassword === newPassword) {
+          throw 'Old password and new password cannot be same';
+        }
+        // update password
+        if (oldPassword !== existedPassword) {
+          throw 'Old password incorrect';
+        } else {
+          targetAuthData.password = newPassword;
+        }
+      }
+      const result = await this.authModel.findByIdAndUpdate(existAuth._id, targetAuthData, { new: false }).exec();
+      return result ? result.toObject() : DEFAULT_AUTH;
     }
-
-    return this.getAdminInfo(existAuth?.email);
+    throw 'Auth not exist';
   }
 
   public async adminLogin(email: string, password: string): Promise<TokenResult> {
@@ -104,7 +97,8 @@ export class AuthService {
     const existedPassword = auth.password ?? '';
     const loginPassword = decodeMD5(password);
     if (!existedPassword || loginPassword === existedPassword) {
-      return this.createToken(auth._id.toString());
+      const token = await this.createToken(auth._id.toString());
+      return token;
     } else {
       throw 'Password incorrect';
     }

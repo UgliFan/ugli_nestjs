@@ -4,18 +4,21 @@ import { HttpUnauthorizedError } from '@app/errors/unauthorized.error';
 import { UNDEFINED } from '@app/constants/value.constant';
 
 /**
- * @class AdminOnlyGuard
- * @classdesc Token existed -> Token activated -> Token data validated
- * @example ```@UseGuards(AdminOnlyGuard)```
+ * @class AdminMaybeGuard
+ * @classdesc Token isn't existed | Token validated
+ * @example ```@UseGuards(AdminMaybeGuard)```
  */
 @Injectable()
-export class AdminOnlyGuard extends AuthGuard('jwt') {
+export class AdminMaybeGuard extends AuthGuard('jwt') {
   canActivate(context: ExecutionContext) {
     return super.canActivate(context);
   }
 
   handleRequest(error, authInfo, errInfo) {
-    if (authInfo && !error && !errInfo) {
+    const validToken = Boolean(authInfo);
+    // MARK: https://github.com/mikenicholson/passport-jwt/issues/174
+    const emptyToken = !authInfo && errInfo?.message === 'No auth token';
+    if (!error && (validToken || emptyToken)) {
       return authInfo;
     } else {
       throw error || new HttpUnauthorizedError(UNDEFINED, errInfo?.message);

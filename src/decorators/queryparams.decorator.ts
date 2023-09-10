@@ -15,7 +15,6 @@ export interface QueryCookies {
 export interface QueryParamsResult {
   /** admin role state */
   isAuthed: boolean;
-  isUnauthed: boolean;
   /** original route params */
   params: Record<string, string>;
   /** original query params */
@@ -40,7 +39,6 @@ export const QueryParams = createParamDecorator((field: keyof QueryParamsResult,
   // https://github.com/jaredhanson/passport/blob/master/CHANGELOG.md
   // http://www.passportjs.org/docs/configure/
   const isAuthed = request.isAuthenticated();
-  const isUnauthed = request.isUnauthenticated();
 
   const ip =
     (request.headers['x-forwarded-for'] as string) ||
@@ -58,7 +56,6 @@ export const QueryParams = createParamDecorator((field: keyof QueryParamsResult,
 
   const result = {
     isAuthed,
-    isUnauthed,
     params: request.params,
     query: request.query as any,
     cookies: request.cookies,

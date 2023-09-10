@@ -17,8 +17,8 @@ export const DEFAULT_AUTH = Object.freeze<Auth>({
 })
 export class Auth {
   @IsString({ message: "what's your name?" })
-  @IsDefined()
-  @prop({ required: true })
+  @IsOptional()
+  @prop({ default: '' })
   name: string;
 
   @IsString({ message: '' })
@@ -27,18 +27,19 @@ export class Auth {
   email: string;
 
   @IsString()
+  @IsOptional()
   @prop({ select: false })
   phone?: string;
 
   @IsString()
-  @IsDefined()
-  @prop({ required: true })
-  slogan: string;
+  @IsOptional()
+  @prop({ default: '' })
+  slogan?: string;
 
   @IsString()
   @IsOptional()
   @prop({ default: '' })
-  avatar: string;
+  avatar?: string;
 
   @IsOptional()
   @prop({ default: 1 })
