@@ -4,8 +4,10 @@ import { getProviderByTypegooseClass } from '@app/transformers/model.transformer
 
 export const DEFAULT_AUTH = Object.freeze<Auth>({
   name: '',
+  email: '',
   slogan: '',
   avatar: '',
+  sex: 1,
 });
 
 @modelOptions({
@@ -19,6 +21,15 @@ export class Auth {
   @prop({ required: true })
   name: string;
 
+  @IsString({ message: '' })
+  @IsDefined()
+  @prop({ required: true })
+  email: string;
+
+  @IsString()
+  @prop({ select: false })
+  phone?: string;
+
   @IsString()
   @IsDefined()
   @prop({ required: true })
@@ -28,6 +39,10 @@ export class Auth {
   @IsOptional()
   @prop({ default: '' })
   avatar: string;
+
+  @IsOptional()
+  @prop({ default: 1 })
+  sex: number;
 
   @IsString()
   @prop({ select: false })

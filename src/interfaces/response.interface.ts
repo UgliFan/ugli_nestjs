@@ -35,7 +35,6 @@ export type HttpResponseError = HttpResponseBase & {
 
 // HTTP success
 export type HttpResponseSuccess<T> = HttpResponseBase & {
-  params?: any;
   result: T | HttpPaginateResult<T>;
 };
 

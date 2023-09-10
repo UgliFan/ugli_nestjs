@@ -1,5 +1,5 @@
 export enum CacheKeys {
-  Option = 'option',
+  AllUsers = 'all-users',
   Archive = 'archive',
   AllTags = 'all-tags',
   HottestArticles = 'hottest-articles',

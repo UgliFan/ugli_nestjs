@@ -2,6 +2,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { HttpUnauthorizedError } from '@app/errors/unauthorized.error';
 import { UNDEFINED } from '@app/constants/value.constant';
+import logger from '@app/utils/logger';
+
+const log = logger.scope('AdminOnlyGuard');
 
 /**
  * @class AdminOnlyGuard
@@ -15,6 +18,7 @@ export class AdminOnlyGuard extends AuthGuard('jwt') {
   }
 
   handleRequest(error, authInfo, errInfo) {
+    log.debug('handleRequest', authInfo, errInfo?.message);
     if (authInfo && !error && !errInfo) {
       return authInfo;
     } else {

@@ -9,6 +9,8 @@ import { TokenResult } from './auth.interface';
 import { Auth } from './auth.schema';
 import logger from '@app/utils/logger';
 
+const log = logger.scope('AuthController');
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -16,16 +18,23 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
+  @Get('search')
+  @Responser.handle('Get user list')
+  getAllUsers(@QueryParams() { isAuthed }: QueryParamsResult) {
+    return isAuthed ? this.authService.getAllUsers() : this.authService.getUserCacheForGuest();
+  }
+
   @Post('login')
   @Responser.handle({ message: 'Login', error: HttpStatus.BAD_REQUEST })
   async login(@QueryParams() { visitor: { ip } }: QueryParamsResult, @Body() body: AuthLoginDTO): Promise<TokenResult> {
-    const token = await this.authService.adminLogin(body.password);
+    log.debug('login', body);
+    const token = await this.authService.adminLogin(body.email, body.password);
     if (ip) {
       this.ipService.queryLocation(ip).then((location) => {
-        const subject = `App has new login activity`;
+        const subject = 'App has new login activity';
         const locationText = location ? [location.country, location.region, location.city].join(' · ') : 'unknow';
         const content = `${subject}, IP: ${ip}, location: ${locationText}`;
-        logger.info(subject, {
+        log.debug(subject, {
           text: content,
           html: content,
         });
@@ -36,8 +45,8 @@ export class AuthController {
 
   @Get('admin')
   @Responser.handle('Get admin info')
-  getAdminInfo(): Promise<Auth> {
-    return this.authService.getAdminInfo();
+  getAdminInfo(@QueryParams() { query }: QueryParamsResult): Promise<Auth> {
+    return this.authService.getAdminInfo(query.email);
   }
 
   @Put('admin')
@@ -60,6 +69,6 @@ export class AuthController {
   @UseGuards(AdminOnlyGuard)
   @Responser.handle('Renewal Token')
   renewalToken(): TokenResult {
-    return this.authService.createToken();
+    return this.authService.createToken('');
   }
 }

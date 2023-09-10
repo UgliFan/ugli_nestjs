@@ -45,7 +45,6 @@ export const REDIS = {
 
 export const AUTH = {
   expiresIn: argv.auth_expires_in || 3600,
-  data: argv.auth_data || { user: 'root' },
+  salt: argv.auth_salt || 'ugli_salt',
   jwtSecret: argv.auth_key || 'ugli_test',
-  defaultPassword: argv.auth_default_password || 'root',
 };

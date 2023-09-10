@@ -5,6 +5,7 @@ import { Injectable, NestInterceptor, CallHandler, ExecutionContext } from '@nes
 import { HttpResponseSuccess, ResponseStatus } from '@app/interfaces/response.interface';
 import { getResponserOptions } from '@app/decorators/responser.decorator';
 import { HTTP_DEFAULT_SUCCESS_TEXT } from '@app/constants/text.constant';
+import logger from '@app/utils/logger';
 
 /**
  * @class TransformInterceptor
@@ -20,19 +21,12 @@ export class TransformInterceptor<T> implements NestInterceptor<T, T | HttpRespo
     }
 
     const request = context.switchToHttp().getRequest<Request>();
+    logger.debug('TransformInterceptor', request.isAuthenticated());
     return next.handle().pipe(
       map((data: any) => {
         return {
           status: ResponseStatus.Success,
           message: successMessage || HTTP_DEFAULT_SUCCESS_TEXT,
-          params: {
-            isAuthenticated: request.isAuthenticated(),
-            isUnauthenticated: request.isUnauthenticated(),
-            url: request.url,
-            method: request.method,
-            routes: request.params,
-            payload: request.$validatedPayload || {},
-          },
           result: paginate
             ? {
                 data: data.documents,

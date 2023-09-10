@@ -14,7 +14,8 @@ import { DBModule } from './processors/db/db.module';
 import { CacheModule } from './processors/cache/cache.module';
 // biz modules
 import { AuthModule } from '@app/modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
+// proxy
+import { WeatherModule } from '@app/modules/weather/weather.module';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { UserModule } from './modules/user/user.module';
     CacheModule,
     // bizs
     AuthModule,
-    UserModule,
+    WeatherModule,
   ],
   controllers: [AppController],
   providers: [
