@@ -29,19 +29,15 @@ export class AuthController {
   }
 
   @Post('login')
-  @Responser.handle({ message: 'Login', error: HttpStatus.BAD_REQUEST })
+  @Responser.handle({ message: 'Login', success: HttpStatus.OK, error: HttpStatus.BAD_REQUEST })
   async login(@QueryParams() { visitor: { ip } }: QueryParamsResult, @Body() body: AuthLoginDTO): Promise<TokenResult> {
-    log.debug('login', body);
     const token = await this.authService.adminLogin(body.email, body.password);
     if (ip) {
       this.ipService.queryLocation(ip).then((location) => {
         const subject = 'App has new login activity';
         const locationText = location ? [location.country, location.region, location.city].join(' · ') : 'unknow';
         const content = `${subject}, IP: ${ip}, location: ${locationText}`;
-        log.debug(subject, {
-          text: content,
-          html: content,
-        });
+        log.warn(subject, content);
       });
     }
     return token;
@@ -52,6 +48,12 @@ export class AuthController {
   @Responser.handle('Get admin info')
   getAdminInfo(@QueryParams() { query }: QueryParamsResult): Promise<Auth> {
     return this.authService.getAdminInfo(query.email);
+  }
+
+  @Post('register')
+  @Responser.handle('Register admin')
+  createAdmin(@Body() auth: Auth): Promise<void> {
+    return this.authService.createAdmin(auth);
   }
 
   @Put('update')

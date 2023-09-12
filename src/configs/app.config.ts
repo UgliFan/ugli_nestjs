@@ -32,12 +32,12 @@ export const CROSS_DOMAIN = {
 };
 
 export const MONGO_DB = {
-  uri: argv.db_uri || `mongodb://192.168.17.129:27017/ugli_test`,
+  uri: argv.db_uri || `mongodb://127.0.0.1:27017/ugli_test`,
 };
 
 export const REDIS = {
   namespace: argv.redis_namespace || 'ugli_test',
-  host: argv.redis_host || '192.168.17.129',
+  host: argv.redis_host || '127.0.0.1',
   port: argv.redis_port || 6379,
   username: argv.redis_username || 'default',
   password: argv.redis_password || '123456',

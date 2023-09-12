@@ -59,6 +59,16 @@ export class AuthService {
     return adminInfo ? adminInfo.toObject() : DEFAULT_AUTH;
   }
 
+  public async createAdmin(auth: Auth): Promise<void> {
+    if (auth.password) {
+      auth.password = decodeMD5(auth.password);
+    }
+    const res = await this.authModel.create(auth);
+    const code = ''; // TODO: random a code, try to send notification to app
+    this.cacheService.set(res.email, code, AUTH.expiresIn as number);
+    log.debug('createAdmin', code);
+  }
+
   public async putAdminInfo(auth: AuthUpdateDTO): Promise<Auth> {
     const { password = '', new_password, email, ...restAuth } = auth;
     const targetAuthData: Partial<Auth> = { ...restAuth };
@@ -90,12 +100,12 @@ export class AuthService {
   }
 
   public async adminLogin(email: string, password: string): Promise<TokenResult> {
-    const auth = await this.authModel.findOne({ email }).exec();
+    const auth = await this.authModel.findOne({ email }, '+password').exec();
     if (!auth) {
       throw 'User not exist';
     }
     const existedPassword = auth.password ?? '';
-    const loginPassword = decodeMD5(password);
+    const loginPassword = password ? decodeMD5(password) : '';
     if (!existedPassword || loginPassword === existedPassword) {
       const token = await this.createToken(auth._id.toString());
       return token;

@@ -10,7 +10,7 @@ const log = logger.scope('WeatherService');
 export class WeatherService {
   public async getNoramlData(): Promise<any> {
     const res = await axios.get(
-      `https://api.caiyunapp.com/v2.6/${Argvs.cyWetherToken}/116.3176,39.9760/weather?alert=true&dailysteps=1&hourlysteps=24`,
+      `https://api.caiyunapp.com/v2.6/${Argvs.cyWeatherToken}/116.3176,39.9760/weather?alert=true&dailysteps=1&hourlysteps=24`,
     );
     log.debug('getNoramlData', res.data);
     return res.data;
