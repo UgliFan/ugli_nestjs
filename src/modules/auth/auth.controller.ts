@@ -5,7 +5,7 @@ import { Responser } from '@app/decorators/responser.decorator';
 import { QueryParams, QueryParamsResult } from '@app/decorators/queryparams.decorator';
 import { AuthLoginDTO, AuthUpdateDTO } from './auth.dto';
 import { AuthService } from './auth.service';
-import { TokenResult } from './auth.interface';
+import { RecoverBody, TokenResult, VerifyBody } from './auth.interface';
 import { Auth } from './auth.schema';
 import logger from '@app/utils/logger';
 import { decodeBase64 } from '@app/transformers/codec.transformer';
@@ -51,9 +51,33 @@ export class AuthController {
   }
 
   @Post('register')
-  @Responser.handle('Register admin')
-  createAdmin(@Body() auth: Auth): Promise<void> {
-    return this.authService.createAdmin(auth);
+  @Responser.handle({ message: 'Register admin', success: HttpStatus.OK })
+  registerAdmin(@Body() auth: Auth): Promise<void> {
+    return this.authService.registerAdmin(auth);
+  }
+
+  @Post('verify')
+  @Responser.handle({ message: 'Verify code', success: HttpStatus.OK })
+  verfiyRegister(@Body() body: VerifyBody): Promise<void> {
+    return this.authService.verfiyRegister(body);
+  }
+
+  @Post('recode')
+  @Responser.handle({ message: 'resend code', success: HttpStatus.OK })
+  resendCode(@Body() body: { email: string }): Promise<void> {
+    return this.authService.sendCode(body.email);
+  }
+
+  @Post('recover')
+  @Responser.handle({ message: 'before recover password', success: HttpStatus.OK })
+  beforeRecoverPassword(@Body() body: { email: string }): Promise<void> {
+    return this.authService.beforeRecoverPassword(body.email);
+  }
+
+  @Put('newpassword')
+  @Responser.handle({ message: 'recover password', success: HttpStatus.OK })
+  recoverPassword(@Body() body: RecoverBody): Promise<void> {
+    return this.authService.recoverPassword(body);
   }
 
   @Put('update')
