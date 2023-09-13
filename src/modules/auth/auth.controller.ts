@@ -65,7 +65,7 @@ export class AuthController {
   @Post('recode')
   @Responser.handle({ message: 'resend code', success: HttpStatus.OK })
   resendCode(@Body() body: { email: string }): Promise<void> {
-    return this.authService.sendCode(body.email);
+    return this.authService.sendCode(body.email, 'Register');
   }
 
   @Post('recover')

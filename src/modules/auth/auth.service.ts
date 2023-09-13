@@ -7,11 +7,12 @@ import { MongooseModel } from '@app/interfaces/mongoose.interface';
 import { RecoverBody, TokenResult, VerifyBody } from './auth.interface';
 import { Auth, DEFAULT_AUTH } from './auth.schema';
 import { AuthUpdateDTO } from './auth.dto';
-import { AUTH } from '@app/configs/app.config';
+import { APP, AUTH } from '@app/configs/app.config';
 import { CacheManualResult, CacheService } from '@app/processors/cache/cache.service';
 import { CacheKeys } from '@app/constants/cache.constant';
 import logger from '@app/utils/logger';
 import { randomVerifyCode } from '@app/utils/math';
+import { EmailService } from '@app/processors/helper/helper.service.email';
 
 const log = logger.scope('AuthService');
 
@@ -22,6 +23,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectModel(Auth) private readonly authModel: MongooseModel<Auth>,
     private readonly cacheService: CacheService,
+    private readonly emailService: EmailService,
   ) {
     this.authCache = this.cacheService.manual({
       key: CacheKeys.AllUsers,
@@ -60,24 +62,32 @@ export class AuthService {
     return adminInfo ? adminInfo.toObject() : DEFAULT_AUTH;
   }
 
-  public async sendCode(email: string): Promise<void> {
+  public async sendCode(email: string, from: string): Promise<void> {
     const existAuth = await this.authModel.findOne({ email }).exec();
     if (!existAuth) {
       throw 'User not existed, please register first';
     }
-    const code = randomVerifyCode(); // TODO: try to send notification to app
+    const code = randomVerifyCode();
     await this.cacheService.set(email, code, AUTH.expiresIn as number);
-    log.debug('Verify Code:', code);
+    this.emailService.sendMailAs(APP.NAME, {
+      to: email,
+      subject: `[${from}] Check your verify code`,
+      text: `Verify Code: ${code}`,
+      html: `Verify Code: ${code}`,
+    });
+    log.debug(`[${from}] Verify Code:`, code);
   }
 
   public async registerAdmin(auth: Auth): Promise<void> {
-    const existAuth = await this.authModel.findOne({ email: auth.email }).exec();
-    if (existAuth) {
+    auth.password = auth.password ? decodeMD5(auth.password) : '';
+    const existAuth = await this.authModel.findOne({ email: auth.email, password: auth.password }, '+active').exec();
+    if (existAuth && existAuth.active) {
       throw 'Exist user';
     }
-    auth.password = auth.password ? decodeMD5(auth.password) : '';
-    const res = await this.authModel.create(auth);
-    await this.sendCode(res.email);
+    if (!existAuth) {
+      await this.authModel.create(auth);
+    }
+    await this.sendCode(auth.email, 'Register');
   }
 
   public async verfiyRegister(data: VerifyBody): Promise<void> {
@@ -98,7 +108,7 @@ export class AuthService {
     if (!existAuth) {
       throw 'User not existed';
     }
-    await this.sendCode(email);
+    await this.sendCode(email, 'Recover');
   }
 
   public async recoverPassword(data: RecoverBody): Promise<void> {
