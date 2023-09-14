@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UNDEFINED } from '@app/constants/value.constant';
 import { InjectModel } from '@app/transformers/model.transformer';
 import { decodeMD5 } from '@app/transformers/codec.transformer';
 import { MongooseModel } from '@app/interfaces/mongoose.interface';
@@ -9,7 +8,7 @@ import { Auth, DEFAULT_AUTH } from './auth.schema';
 import { AuthUpdateDTO } from './auth.dto';
 import { APP, AUTH } from '@app/configs/app.config';
 import { CacheManualResult, CacheService } from '@app/processors/cache/cache.service';
-import { CacheKeys } from '@app/constants/cache.constant';
+// import { CacheKeys } from '@app/constants/cache.constant';
 import logger from '@app/utils/logger';
 import { randomVerifyCode } from '@app/utils/math';
 import { EmailService } from '@app/processors/helper/helper.service.email';
@@ -25,22 +24,17 @@ export class AuthService {
     private readonly cacheService: CacheService,
     private readonly emailService: EmailService,
   ) {
-    this.authCache = this.cacheService.manual({
-      key: CacheKeys.AllUsers,
-      promise: () => this.getAllUsers(),
-    });
-
-    this.authCache.update().catch((error) => {
-      log.warn('init getAllUsers failed!', error);
-    });
+    // this.authCache = this.cacheService.manual({
+    //   key: CacheKeys.AllUsers,
+    //   promise: () => this.getAllUsers(),
+    // });
+    // this.authCache.update().catch((error) => {
+    //   log.warn('init getAllUsers failed!', error);
+    // });
   }
 
   public async getAllUsers(): Promise<Auth[]> {
     return await this.authModel.find().exec();
-  }
-
-  public async getUserCacheForGuest() {
-    return await this.authCache.get();
   }
 
   public async createToken(authId: string): Promise<TokenResult> {
@@ -57,9 +51,12 @@ export class AuthService {
     return isVerified ? payload.data : null;
   }
 
-  public async getAdminInfo(email?: string): Promise<Auth> {
-    const adminInfo = await this.authModel.findOne(email ? { email } : UNDEFINED, '-_id').exec();
-    return adminInfo ? adminInfo.toObject() : DEFAULT_AUTH;
+  public async getUserInfo(userId: string): Promise<Auth> {
+    const adminInfo = await this.authModel.findOne({ _id: userId }, '-_id').exec();
+    if (!adminInfo) {
+      throw 'User not existed';
+    }
+    return adminInfo.toObject();
   }
 
   public async sendCode(email: string, from: string): Promise<void> {

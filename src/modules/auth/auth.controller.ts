@@ -25,7 +25,7 @@ export class AuthController {
   @UseGuards(AdminMaybeGuard)
   @Responser.handle('Get user list')
   getAllUsers(@QueryParams() { isAuthed }: QueryParamsResult) {
-    return isAuthed ? this.authService.getAllUsers() : this.authService.getUserCacheForGuest();
+    return isAuthed ? this.authService.getAllUsers() : [];
   }
 
   @Post('login')
@@ -43,15 +43,17 @@ export class AuthController {
     return token;
   }
 
-  @Get('admin')
+  @Get('user')
   @UseGuards(AdminOnlyGuard)
-  @Responser.handle('Get admin info')
-  getAdminInfo(@QueryParams() { query }: QueryParamsResult): Promise<Auth> {
-    return this.authService.getAdminInfo(query.email);
+  @Responser.handle({ message: 'Get user info', success: HttpStatus.OK, error: HttpStatus.UNAUTHORIZED })
+  getUserInfo(@QueryParams() { request }: QueryParamsResult): Promise<Auth> {
+    const encodeJwtSign = request.headers.authorization?.split('.')[1] || '';
+    const userId = encodeJwtSign ? JSON.parse(decodeBase64(encodeJwtSign)).data : '';
+    return this.authService.getUserInfo(userId);
   }
 
   @Post('register')
-  @Responser.handle({ message: 'Register admin', success: HttpStatus.OK })
+  @Responser.handle({ message: 'Register user', success: HttpStatus.OK })
   registerAdmin(@Body() auth: Auth): Promise<void> {
     return this.authService.registerAdmin(auth);
   }
@@ -82,7 +84,7 @@ export class AuthController {
 
   @Put('update')
   @UseGuards(AdminOnlyGuard)
-  @Responser.handle('Update admin info')
+  @Responser.handle('Update user info')
   putAdminInfo(@Body() auth: AuthUpdateDTO): Promise<Auth> {
     return this.authService.putAdminInfo(auth);
   }

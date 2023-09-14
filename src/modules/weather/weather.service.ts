@@ -10,11 +10,11 @@ const log = logger.scope('WeatherService');
 export class WeatherService {
   constructor(private readonly httpService: HttpService) {}
 
-  public async getNoramlData(): Promise<any> {
+  public async getNoramlData(location?: string): Promise<any> {
     const res = await this.httpService.axiosRef.get(
-      `https://api.caiyunapp.com/v2.6/${Argvs.cyWeatherToken}/116.3176,39.9760/weather?alert=true&dailysteps=1&hourlysteps=24`,
+      `https://api.caiyunapp.com/v2.6/${Argvs.cyWeatherToken}/${location || '116.3176,39.9760'}/weather?alert=true&dailysteps=1&hourlysteps=24`,
     );
-    log.debug('getNoramlData', res.data);
+    log.debug('getNoramlData', res);
     return res.data;
   }
 }
