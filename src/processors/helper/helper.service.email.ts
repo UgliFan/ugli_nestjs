@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import { Injectable } from '@nestjs/common';
 import { getMessageFromNormalError } from '@app/transformers/error.transformer';
 import { APP } from '@app/configs/app.config';
-import Argvs from '@app/configs/secret';
+import { EMAIL } from '@app/configs/app.config';
 import logger from '@app/utils/logger';
 
 const log = logger.scope('EmailService');
@@ -25,8 +25,8 @@ export class EmailService {
       port: 587,
       secure: false,
       auth: {
-        user: Argvs.qqMailAccount,
-        pass: Argvs.qqMailToken,
+        user: EMAIL.account,
+        pass: EMAIL.token,
       },
     });
     this.verifyClient();
@@ -54,7 +54,7 @@ export class EmailService {
     this.transporter.sendMail(
       {
         ...mailOptions,
-        from: `"${APP.FE_NAME}" <${Argvs.qqMailAccount}>`,
+        from: `"${APP.FE_NAME}" <${EMAIL.account}>`,
       },
       (error, info) => {
         if (error) {

@@ -15,6 +15,7 @@ export const APP = {
   FE_NAME: 'ugli.fans',
   FE_URL: 'https://ugli.fans',
   STATIC_URL: 'https://static.ugli.fans',
+  cyToken: argv.cy_token || '',
 };
 
 export const PROJECT = {
@@ -37,13 +38,18 @@ export const MONGO_DB = {
 
 export const REDIS = {
   namespace: argv.redis_namespace || 'ugli_test',
-  host: argv.redis_host || '127.0.0.1',
-  port: argv.redis_port || 6379,
-  username: argv.redis_username || 'default',
-  password: argv.redis_password || '123456',
+  host: argv.server_host || '127.0.0.1',
+  port: 6379,
+  username: 'default',
+  password: argv.redis_password || '',
 };
 
 export const AUTH = {
-  expiresIn: argv.auth_expires_in || 3600,
+  expiresIn: 3600,
   jwtSecret: argv.auth_key || 'ugli_test',
+};
+
+export const EMAIL = {
+  account: '625626423@qq.com',
+  token: argv.email_token || '',
 };
