@@ -15,7 +15,7 @@ export const APP = {
   FE_NAME: 'ugli.fans',
   FE_URL: 'https://ugli.fans',
   STATIC_URL: 'https://static.ugli.fans',
-  cyToken: argv.cy_token || '',
+  cyToken: argv.cy_token || 'KVyICPX5ZPi4AuaA',
 };
 
 export const PROJECT = {
@@ -41,7 +41,7 @@ export const REDIS = {
   host: argv.server_host || '127.0.0.1',
   port: 6379,
   username: 'default',
-  password: argv.redis_password || '',
+  password: argv.redis_password || '123456',
 };
 
 export const AUTH = {
@@ -51,5 +51,5 @@ export const AUTH = {
 
 export const EMAIL = {
   account: '625626423@qq.com',
-  token: argv.email_token || '',
+  token: argv.email_token || 'thupfjbjwjobbfgd',
 };
