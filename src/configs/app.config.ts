@@ -1,9 +1,14 @@
+import logger from '@app/utils/logger';
 import path from 'path';
 import yargs from 'yargs';
 
 const argv = yargs.argv as Record<string, string | void>;
 const ROOT_PATH = path.join(__dirname, '../..');
 const packageJSON = require(path.resolve(ROOT_PATH, 'package.json'));
+
+const log = logger.scope('APP CONFIG');
+
+log.debug('argv', argv);
 
 export const APP = {
   PORT: 8000,
@@ -15,7 +20,7 @@ export const APP = {
   FE_NAME: 'ugli.fans',
   FE_URL: 'https://ugli.fans',
   STATIC_URL: 'https://static.ugli.fans',
-  cyToken: argv.cy_token || 'KVyICPX5ZPi4AuaA',
+  cyToken: argv.cy_token || '',
 };
 
 export const PROJECT = {
@@ -33,23 +38,23 @@ export const CROSS_DOMAIN = {
 };
 
 export const MONGO_DB = {
-  uri: argv.db_uri || `mongodb://127.0.0.1:27017/ugli_test`,
+  uri: argv.db_uri || '',
 };
 
 export const REDIS = {
-  namespace: argv.redis_namespace || 'ugli_test',
-  host: argv.server_host || '127.0.0.1',
+  namespace: argv.redis_namespace || '',
+  host: argv.server_host || '',
   port: 6379,
   username: 'default',
-  password: argv.redis_password || '123456',
+  password: argv.redis_password?.toString() || '',
 };
 
 export const AUTH = {
   expiresIn: 3600,
-  jwtSecret: argv.auth_key || 'ugli_test',
+  jwtSecret: argv.auth_key || '',
 };
 
 export const EMAIL = {
   account: '625626423@qq.com',
-  token: argv.email_token || 'thupfjbjwjobbfgd',
+  token: argv.email_token || '',
 };
