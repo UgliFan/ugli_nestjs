@@ -1,14 +1,13 @@
 import logger from '@app/utils/logger';
 import path from 'path';
-import yargs from 'yargs';
 
-const argv = yargs.argv as Record<string, string | void>;
 const ROOT_PATH = path.join(__dirname, '../..');
 const packageJSON = require(path.resolve(ROOT_PATH, 'package.json'));
+const env = process.env;
 
 const log = logger.scope('APP CONFIG');
 
-log.debug('argv', argv);
+log.debug('env', env);
 
 export const APP = {
   PORT: 8000,
@@ -20,7 +19,7 @@ export const APP = {
   FE_NAME: 'ugli.fans',
   FE_URL: 'https://ugli.fans',
   STATIC_URL: 'https://static.ugli.fans',
-  cyToken: argv.cy_token || '',
+  cyToken: env.CY_TOKEN || '',
 };
 
 export const PROJECT = {
@@ -38,23 +37,23 @@ export const CROSS_DOMAIN = {
 };
 
 export const MONGO_DB = {
-  uri: argv.db_uri || '',
+  uri: env.DB_URI || '',
 };
 
 export const REDIS = {
-  namespace: argv.redis_namespace || '',
-  host: argv.server_host || '',
+  namespace: env.REDIS_NAMESPACE || '',
+  host: env.REDIS_HOST || '',
   port: 6379,
   username: 'default',
-  password: argv.redis_password?.toString() || '',
+  password: env.REDIS_PASSWORD || '',
 };
 
 export const AUTH = {
   expiresIn: 3600,
-  jwtSecret: argv.auth_key || '',
+  jwtSecret: env.JWT_SECRET || '',
 };
 
 export const EMAIL = {
   account: '625626423@qq.com',
-  token: argv.email_token || '',
+  token: env.EMAIL_TOKEN || '',
 };
