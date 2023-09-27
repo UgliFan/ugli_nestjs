@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    dockerimagename = "registry.ugli.fans/ugli_nestjs"
+    dockerimagename = "uglifan/ugli_nestjs"
     dockerImage = ""
   }
 
@@ -27,7 +27,7 @@ pipeline {
       }
       steps {
         script {
-          docker.withRegistry('https://registry.ugli.fans', registryCredential) {
+          docker.withRegistry('http://localhost:5000', registryCredential) {
             dockerImage.push("latest")
           }
         }
