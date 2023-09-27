@@ -19,3 +19,5 @@ spec:
         image: localhost:5000/ugli_nestjs:test
         ports:
         - containerPort: 8000
+      imagePullSecrets:
+      - name: registry.ugli.fans
