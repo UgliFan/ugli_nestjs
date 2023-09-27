@@ -8,14 +8,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ugli_nestjs
+      app: ugli-nestjs
   template:
     metadata:
       labels:
-        app: ugli_nestjs
+        app: ugli-nestjs
     spec:
       containers:
-      - name: ugli_nestjs
+      - name: ugli-nestjs
         image: localhost:5000/ugli_nestjs:test
         ports:
         - containerPort: 8000
