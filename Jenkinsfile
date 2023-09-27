@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    dockerimagename = "ugli.fans/ugli_nestjs"
+    dockerimagename = "registry.ugli.fans/ugli_nestjs"
     dockerImage = ""
   }
 

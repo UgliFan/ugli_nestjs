@@ -30,7 +30,7 @@ spec:
         - name: registry.ugli.fans
       containers:
         - name: ugli-nestjs
-          image: ugli.fans/ugli_nestjs:latest
+          image: registry.ugli.fans/ugli_nestjs:test-latest
           ports:
             - containerPort: 8000
           envFrom:
