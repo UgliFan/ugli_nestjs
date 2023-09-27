@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: ugli_nestjs
-        image: registry.ugli.fans/ugli_nestjs:latest
+        image: localhost:5000/ugli_nestjs:test
         ports:
         - containerPort: 8000
