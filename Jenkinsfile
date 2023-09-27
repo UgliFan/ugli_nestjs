@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Checkout Source') {
       steps {
-        git 'https://github.com/UgliFan/ugli_nestjs.git'
+        git branch: 'master', url: 'https://github.com/UgliFan/ugli_nestjs.git'
       }
     }
 
