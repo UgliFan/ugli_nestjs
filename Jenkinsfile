@@ -1,4 +1,4 @@
-pipline {
+pipeline {
   environment {
     dockerimagename = "registry.ugli.fans/ugli_nestjs"
     dockerImage = ""
