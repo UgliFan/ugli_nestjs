@@ -27,10 +27,11 @@ spec:
         app: ugli-nestjs
     spec:
       imagePullSecrets:
-        - name: registry.ugli.fans
+        - name: localhost
       containers:
         - name: ugli-nestjs
-          image: registry.ugli.fans/ugli_nestjs:test-latest
+          image: localhost:5000/ugli_nestjs:test-latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
           envFrom:
