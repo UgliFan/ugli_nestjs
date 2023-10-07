@@ -9,7 +9,9 @@ pipeline {
     }
 
     stage('Deploying ugli_nestjs container to k3s') {
-      sh 'kubectl apply -f k3s.yaml'
+      steps {
+        kubernetesDeploy(configs: "k3s.yaml")
+      }
     }
   }
 }
