@@ -8,9 +8,13 @@ pipeline {
       }
     }
 
-    stage('Deploying ugli_nestjs container to k3s') {
+    stage('Deploying to k3s') {
       steps {
-        kubernetesDeploy(configs: "k3s.yaml")
+        kubernetesDeploy(
+          kubeconfigId: "kubeconfig",
+          configs: "k3s.yaml",
+          enableConfigSubstitution: true
+        )
       }
     }
   }
