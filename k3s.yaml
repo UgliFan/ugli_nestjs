@@ -8,7 +8,7 @@ spec:
   ports:
   - port: 8000
     targetPort: 8000
-    nodePort: 8000
+    nodePort: 31368
   selector:
     app: ugli-nestjs
 ---
