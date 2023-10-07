@@ -1,15 +1,15 @@
-node {
-  stage('Preparation') {
-    // Install kubectl in Jenkins agent
-    sh 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl'
-    sh 'chmod +x ./kubectl && mv kubectl /usr/local/sbin'
-  }
+pipeline {
+  agent any
 
-  stage('Checkout source') {
-    git url: 'https://github.com/UgliFan/ugli_nestjs.git'
-  }
+  stages {
+    stage('Checkout Source') {
+      steps {
+        git branch: 'master', url: 'https://github.com/UgliFan/ugli_nestjs.git'
+      }
+    }
 
-  stage('Integration') {
-    sh 'kubectl apply -f k3s.yaml'
+    stage('Deploying ugli_nestjs container to k3s') {
+      sh 'kubectl apply -f k3s.yaml'
+    }
   }
 }
