@@ -7,8 +7,7 @@ import { RecoverBody, TokenResult, VerifyBody } from './auth.interface';
 import { Auth, DEFAULT_AUTH } from './auth.schema';
 import { AuthUpdateDTO } from './auth.dto';
 import { APP, AUTH } from '@app/configs/app.config';
-import { CacheManualResult, CacheService } from '@app/processors/cache/cache.service';
-// import { CacheKeys } from '@app/constants/cache.constant';
+import { CacheService } from '@app/processors/cache/cache.service';
 import logger from '@app/utils/logger';
 import { randomVerifyCode } from '@app/utils/math';
 import { EmailService } from '@app/processors/helper/helper.service.email';
@@ -17,21 +16,12 @@ const log = logger.scope('AuthService');
 
 @Injectable()
 export class AuthService {
-  private authCache: CacheManualResult<Auth[]>;
   constructor(
     private readonly jwtService: JwtService,
     @InjectModel(Auth) private readonly authModel: MongooseModel<Auth>,
     private readonly cacheService: CacheService,
     private readonly emailService: EmailService,
-  ) {
-    // this.authCache = this.cacheService.manual({
-    //   key: CacheKeys.AllUsers,
-    //   promise: () => this.getAllUsers(),
-    // });
-    // this.authCache.update().catch((error) => {
-    //   log.warn('init getAllUsers failed!', error);
-    // });
-  }
+  ) {}
 
   public async getAllUsers(): Promise<Auth[]> {
     return await this.authModel.find().exec();
@@ -40,6 +30,10 @@ export class AuthService {
   public async createToken(authId: string): Promise<TokenResult> {
     const token = this.jwtService.sign({ data: authId });
     await this.cacheService.set(authId, token, +AUTH.expiresIn);
+    const existAuth = await this.authModel.findOne({ _id: authId }, '+region').exec();
+    if (existAuth) {
+      await this.cacheService.set(`region.${authId}`, existAuth.region, +AUTH.expiresIn);
+    }
     return {
       access_token: token,
       expires_in: AUTH.expiresIn as number,

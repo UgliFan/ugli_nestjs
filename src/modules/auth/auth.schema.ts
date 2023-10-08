@@ -1,6 +1,7 @@
 import { prop, modelOptions } from '@typegoose/typegoose';
 import { IsString, IsDefined, IsOptional, IsBoolean } from 'class-validator';
 import { getProviderByTypegooseClass } from '@app/transformers/model.transformer';
+import { Region } from '@app/constants/biz.constant';
 
 export const DEFAULT_AUTH = Object.freeze<Auth>({
   name: '',
@@ -53,6 +54,15 @@ export class Auth {
   @IsOptional()
   @prop({ default: false, select: false })
   active?: boolean;
+
+  @prop({ default: Region.DEFAULT, select: false })
+  region?: Region;
+
+  @prop({ default: Date.now, immutable: true, select: false })
+  created_at?: Date;
+
+  @prop({ default: Date.now })
+  updated_at?: Date;
 }
 
 export const AuthProvider = getProviderByTypegooseClass(Auth);

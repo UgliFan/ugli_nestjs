@@ -1,9 +1,7 @@
 export enum CacheKeys {
-  AllUsers = 'all-users',
-  Archive = 'archive',
+  AllRegions = 'all-regions',
+  AllCategories = 'all-categories',
   AllTags = 'all-tags',
-  HottestArticles = 'hottest-articles',
-  TodayViewCount = 'today-view-count',
 }
 
 export const getDecoratorCacheKey = (key: string) => {

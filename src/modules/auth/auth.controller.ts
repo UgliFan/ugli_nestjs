@@ -11,6 +11,7 @@ import logger from '@app/utils/logger';
 import { decodeBase64 } from '@app/transformers/codec.transformer';
 import { HttpUnauthorizedError } from '@app/errors/unauthorized.error';
 import { AdminMaybeGuard } from '@app/guards/admin-maybe.guard';
+import { AuthPipe } from '@app/pipes/auth.pipe';
 
 const log = logger.scope('AuthController');
 
@@ -100,11 +101,9 @@ export class AuthController {
   // refresh token
   @Post('renewal')
   @Responser.handle('Renewal Token')
-  renewalToken(@QueryParams() { request }: QueryParamsResult): Promise<TokenResult> {
-    const encodeJwtSign = request.headers.authorization?.split('.')[1] || '';
-    if (encodeJwtSign) {
-      const jwtSign = JSON.parse(decodeBase64(encodeJwtSign)).data;
-      return this.authService.createToken(jwtSign as string);
+  renewalToken(@QueryParams(AuthPipe) { auth }: QueryParamsResult): Promise<TokenResult> {
+    if (auth?.id) {
+      return this.authService.createToken(auth.id);
     } else {
       throw new HttpUnauthorizedError();
     }

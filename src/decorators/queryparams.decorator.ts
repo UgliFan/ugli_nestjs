@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { AuthInject } from '@app/interfaces/auth.interface';
 
 export interface QueryVisitor {
   ip: string | null;
@@ -12,7 +13,7 @@ export interface QueryCookies {
   [key: string]: string;
 }
 
-export interface QueryParamsResult {
+export interface QueryParamsResult extends AuthInject {
   /** admin role state */
   isAuthed: boolean;
   /** original route params */

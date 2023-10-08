@@ -13,6 +13,9 @@ dependencies:
   '@nestjs/jwt':
     specifier: ^10.1.1
     version: 10.1.1(@nestjs/common@10.0.0)
+  '@nestjs/mapped-types':
+    specifier: ^2.0.2
+    version: 2.0.2(@nestjs/common@10.0.0)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)
   '@nestjs/passport':
     specifier: ^10.0.1
     version: 10.0.1(@nestjs/common@10.0.0)(passport@0.6.0)
@@ -22,6 +25,9 @@ dependencies:
   '@nestjs/throttler':
     specifier: ^5.0.0
     version: 5.0.0(@nestjs/common@10.0.0)(@nestjs/core@10.0.0)(reflect-metadata@0.1.13)
+  '@typegoose/auto-increment':
+    specifier: ^3.5.0
+    version: 3.5.0(mongoose@7.5.0)
   '@typegoose/typegoose':
     specifier: ^11.5.0
     version: 11.5.0(mongoose@7.5.0)
@@ -1023,6 +1029,25 @@ packages:
       jsonwebtoken: 9.0.0
     dev: false
 
+  /@nestjs/mapped-types@2.0.2(@nestjs/common@10.0.0)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13):
+    resolution: {integrity: sha512-V0izw6tWs6fTp9+KiiPUbGHWALy563Frn8X6Bm87ANLRuE46iuBMD5acKBDP5lKL/75QFvrzSJT7HkCbB0jTpg==}
+    peerDependencies:
+      '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
+      class-transformer: ^0.4.0 || ^0.5.0
+      class-validator: ^0.13.0 || ^0.14.0
+      reflect-metadata: ^0.1.12
+    peerDependenciesMeta:
+      class-transformer:
+        optional: true
+      class-validator:
+        optional: true
+    dependencies:
+      '@nestjs/common': 10.0.0(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      class-transformer: 0.5.1
+      class-validator: 0.14.0
+      reflect-metadata: 0.1.13
+    dev: false
+
   /@nestjs/passport@10.0.1(@nestjs/common@10.0.0)(passport@0.6.0):
     resolution: {integrity: sha512-hS22LeNj0LByS9toBPkpKyZhyKAXoHACLS1EQrjbAJJEQjhocOskVGwcMwvMlz+ohN+VU804/nMF1Zlya4+TiQ==}
     peerDependencies:
@@ -1220,6 +1245,17 @@ packages:
   /@tsconfig/node16@1.0.4:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
+
+  /@typegoose/auto-increment@3.5.0(mongoose@7.5.0):
+    resolution: {integrity: sha512-XB/EJKvnRgzOUY5BPy7z1+R6UBS1awP6yjm5eYWFsntKjPh4Ai09TFlALlNmnNdDkL3rru7xkz7kp/p/19T2Ng==}
+    engines: {node: '>=14.17.0'}
+    peerDependencies:
+      mongoose: ~7.5.0
+    dependencies:
+      loglevel: 1.8.1
+      mongoose: 7.5.0
+      tslib: 2.6.2
+    dev: false
 
   /@typegoose/typegoose@11.5.0(mongoose@7.5.0):
     resolution: {integrity: sha512-+ca//+8hUzOdK7mJTxHwqMiQjarVGCkF5x073ZScXfWOw35kPOzvvQwBEqFiVMhKW5txkiswsALwriJxhYcO2A==}

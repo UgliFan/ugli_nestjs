@@ -13,7 +13,11 @@ import { ValidationPipe } from '@app/pipes/validation.pipe';
 import { DBModule } from './processors/db/db.module';
 import { CacheModule } from './processors/cache/cache.module';
 // biz modules
+import { RegionModule } from './modules/region/region.module';
 import { AuthModule } from '@app/modules/auth/auth.module';
+import { TagModule } from './modules/tag/tag.module';
+import { CategoryModule } from './modules/category/category.module';
+import { MemoModule } from './modules/memo/memo.module';
 // proxy
 import { WeatherModule } from '@app/modules/weather/weather.module';
 
@@ -30,7 +34,11 @@ import { WeatherModule } from '@app/modules/weather/weather.module';
     DBModule,
     CacheModule,
     // bizs
+    RegionModule,
     AuthModule,
+    TagModule,
+    CategoryModule,
+    MemoModule,
     WeatherModule,
   ],
   controllers: [AppController],
