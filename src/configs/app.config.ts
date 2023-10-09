@@ -41,16 +41,16 @@ export const MONGO_DB = {
 };
 
 export const REDIS = {
-  namespace: env.REDIS_NAMESPACE || '',
-  host: env.REDIS_HOST || '',
+  namespace: env.REDIS_NAMESPACE || 'test',
+  host: env.REDIS_HOST || '127.0.0.1',
   port: 6379,
   username: 'default',
-  password: env.REDIS_PASSWORD || '',
+  password: env.REDIS_PASSWORD || '123456',
 };
 
 export const AUTH = {
   expiresIn: 3600,
-  jwtSecret: env.JWT_SECRET || '',
+  jwtSecret: env.JWT_SECRET || 'test',
 };
 
 export const EMAIL = {
