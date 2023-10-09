@@ -31,7 +31,7 @@ spec:
         - name: localhost
       containers:
         - name: ugli-nestjs
-          image: localhost:5000/ugli_nestjs:v0.0.2
+          image: localhost:5000/ugli_nestjs:v0.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
