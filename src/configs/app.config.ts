@@ -49,7 +49,7 @@ export const REDIS = {
 };
 
 export const AUTH = {
-  expiresIn: 3600,
+  expiresIn: 43200, // 12h
   jwtSecret: env.JWT_SECRET || 'test',
 };
 
