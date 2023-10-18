@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:18-alpine
 LABEL maintainer="625626423@qq.com"
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
