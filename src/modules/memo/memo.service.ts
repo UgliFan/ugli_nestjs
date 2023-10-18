@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@app/transformers/model.transformer';
 import { MongooseModel, MongooseDoc, MongooseID } from '@app/interfaces/mongoose.interface';
 import { PaginateResult, PaginateQuery, PaginateOptions } from '@app/utils/paginate';
-import { Memo, MEMO_LIST_QUERY_PROJECTION, MEMO_FULL_QUERY_REF } from './memo.schema';
+import { Memo, MEMO_FULL_QUERY_REF } from './memo.schema';
 import { Region } from '@app/constants/biz.constant';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class MemoService {
   public paginator(query: PaginateQuery<Memo>, options: PaginateOptions): Promise<PaginateResult<Memo>> {
     return this.memoModel.paginate(query, {
       ...options,
-      projection: MEMO_LIST_QUERY_PROJECTION,
+      // projection: MEMO_LIST_QUERY_PROJECTION,
       populate: MEMO_FULL_QUERY_REF,
     });
   }
