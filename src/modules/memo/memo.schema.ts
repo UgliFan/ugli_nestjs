@@ -38,14 +38,14 @@ export class Memo {
   @ArrayUnique()
   @ArrayNotEmpty()
   @IsArray()
-  @prop({ ref: () => Category, required: true, index: true })
+  @prop({ ref: () => Category, required: true })
   categories?: Ref<Category>[];
 
-  @prop({ ref: () => Tag, index: true })
+  @prop({ ref: () => Tag })
   tags?: Ref<Tag>[];
 
   @IsDefined()
-  @prop({ enum: MemoLevel, default: MemoLevel.Normal, index: true })
+  @prop({ enum: MemoLevel, default: MemoLevel.Normal })
   level: MemoLevel;
 
   @MaxLength(50)
